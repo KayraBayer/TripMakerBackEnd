@@ -1,0 +1,29 @@
+name: Sync Backend to Main Repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  push-to-main-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Backend Code
+        uses: actions/checkout@v4
+
+      - name: Pushing to Main Repo
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.MAIN_REPO_TOKEN }}
+        run: |
+          git clone https://x-access-token:${{ secrets.MAIN_REPO_TOKEN }}@github.com/YOUR_USERNAME/MAIN_REPO_NAME.git destination
+          
+          rsync -av --progress . destination/backend --exclude .git
+          
+          cd destination
+          git checkout dev
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add backend/
+          git commit -m "Sync: Backend updated from source repo" || echo "No changes to commit"
+          git push origin dev
