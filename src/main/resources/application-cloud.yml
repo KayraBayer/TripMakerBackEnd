@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/tripmaker}
+    username: ${SPRING_DATASOURCE_USERNAME:tripmaker}
+    password: ${SPRING_DATASOURCE_PASSWORD:tripmaker}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    locations: classpath:db/migration
+
+tripmaker:
+  local: false
+

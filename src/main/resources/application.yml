@@ -1,0 +1,55 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    # Local default: uses an embedded H2 DB (no DB secrets needed).
+    # Optional: if `SPRING_DATASOURCE_URL` is set, it's used directly (e.g., local Postgres).
+    # Optional: if `config/local.secrets.json` exists, it can be used as a fallback.
+    # In cloud mode you can either set SPRING_DATASOURCE_* directly or enable AWS Secrets Manager.
+    url: ${SPRING_DATASOURCE_URL:}
+    username: ${SPRING_DATASOURCE_USERNAME:}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration/h2
+
+tripmaker:
+  local: ${TRIPMAKER_LOCAL:true}
+  local-secrets:
+    path: ${TRIPMAKER_LOCAL_SECRETS_PATH:config/local.secrets.json}
+  ai:
+    enabled: ${TRIPMAKER_AI_ENABLED:true}
+  openai:
+    api-key: ${OPENAI_API_KEY:}
+    base-url: ${OPENAI_BASE_URL:https://api.openai.com}
+    model: ${OPENAI_MODEL:gpt-4.1}
+    timeout-ms: ${OPENAI_TIMEOUT_MS:20000}
+    max-output-tokens: ${OPENAI_MAX_OUTPUT_TOKENS:250}
+  cors:
+    allowed-origins: ${TRIPMAKER_CORS_ALLOWED_ORIGINS:http://localhost:5173}
+  secrets:
+    enabled: ${TRIPMAKER_SECRETS_ENABLED:false}
+    aws-region: ${TRIPMAKER_AWS_REGION:}
+    secret-id: ${TRIPMAKER_AWS_SECRET_ID:}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: cloud
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    locations: classpath:db/migration
+
+tripmaker:
+  local: false

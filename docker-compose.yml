@@ -1,0 +1,16 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: tripmaker-db
+    environment:
+      POSTGRES_DB: tripmaker
+      POSTGRES_USER: tripmaker
+      POSTGRES_PASSWORD: tripmaker
+    ports:
+      - "5432:5432"
+    volumes:
+      - tripmaker_pgdata:/var/lib/postgresql/data
+
+volumes:
+  tripmaker_pgdata:
+
